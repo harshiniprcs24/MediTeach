@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function ProfileScreen({ onBack, onLogout }) {
+export default function ProfileScreen({ onBack, onLogout, onNavigate }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -93,6 +93,15 @@ export default function ProfileScreen({ onBack, onLogout }) {
       </View>
 
       <TouchableOpacity
+        style={styles.historyButton}
+        onPress={() => onNavigate('history')}
+      >
+        <Text style={styles.historyIcon}>📂</Text>
+        <Text style={styles.historyText}>Prescription History</Text>
+        <Text style={styles.arrow}>›</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={styles.logoutButton}
         onPress={confirmLogout}
       >
@@ -167,6 +176,29 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  historyButton: {
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 17,
+    borderRadius: 12,
+    marginTop: 20,
+    elevation: 2,
+  },
+  historyIcon: {
+    fontSize: 24,
+    marginRight: 15,
+  },
+  historyText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1769AA',
+  },
+  arrow: {
+    fontSize: 28,
+    color: '#1769AA',
   },
   logoutButton: {
     backgroundColor: '#FCE8E8',

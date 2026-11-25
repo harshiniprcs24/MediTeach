@@ -23,12 +23,6 @@ export default function HomeScreen({ onNavigate }) {
       action: 'scan',
     },
     {
-      title: 'Test Your Knowledge',
-      description: 'Answer questions based on your prescription.',
-      icon: '📝',
-      action: 'test',
-    },
-    {
       title: 'AI Medicine Assistant',
       description: 'Ask questions about your medicines.',
       icon: '🤖',
@@ -39,12 +33,6 @@ export default function HomeScreen({ onNavigate }) {
       description: 'Manage your medicine timings.',
       icon: '⏰',
       action: 'reminders',
-    },
-    {
-      title: 'Prescription History',
-      description: 'View your prescription records.',
-      icon: '📂',
-      action: 'history',
     },
     {
       title: 'My Profile',
@@ -59,7 +47,7 @@ export default function HomeScreen({ onNavigate }) {
       <Text style={styles.title}>MediTeach</Text>
 
       <Text style={styles.subtitle}>
-        Your Smart Medication Assistant
+        Medicine Made Simple.
       </Text>
 
       <Text style={styles.heading}>Welcome!</Text>

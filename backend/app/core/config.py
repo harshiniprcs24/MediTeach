@@ -18,8 +18,11 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./mediteach.db"
 
     # CORS
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:8081", "http://localhost:19006"]
-
+    ALLOWED_ORIGINS: List[str] = [
+    "http://localhost:8081",
+    "http://localhost:8082",
+    "http://localhost:19006",
+]
     # File uploads
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
