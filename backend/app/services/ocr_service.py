@@ -44,6 +44,16 @@ class OCRService:
         try:
             import pytesseract
             from PIL import Image
+
+            # On Windows, pytesseract cannot find the Tesseract binary from PATH
+            # when the server is started from a virtual environment. Set the
+            # absolute path explicitly. The fallback covers Linux/macOS where
+            # Tesseract is on PATH as 'tesseract'.
+            import os
+            WINDOWS_TESSERACT = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+            if os.path.isfile(WINDOWS_TESSERACT):
+                pytesseract.pytesseract.tesseract_cmd = WINDOWS_TESSERACT
+
             img = Image.open(file_path)
             # Try multiple languages: English + Indic scripts
             text = pytesseract.image_to_string(img, lang="eng")

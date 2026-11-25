@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -8,33 +7,52 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
+
+import { login } from '../services/authService';
 
 export default function LoginScreen({
   onLogin,
   onRegister,
   onForgotPassword,
 }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading]   = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    // ── Client-side validation ──────────────────────────────────────────────
     if (!email.trim() || !password) {
-      Alert.alert(
-        'Missing Details',
-        'Please enter your email and password.'
-      );
+      Alert.alert('Missing Details', 'Please enter your email and password.');
       return;
     }
 
     if (!email.includes('@') || !email.includes('.')) {
-      Alert.alert(
-        'Invalid Email',
-        'Please enter a valid email address.'
-      );
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
 
+    // ── Call backend ────────────────────────────────────────────────────────
+    setLoading(true);
+    const result = await login(email, password);
+    setLoading(false);
+
+    if (result.error) {
+      // Map common HTTP status codes to user-friendly messages
+      if (result.status === 401) {
+        Alert.alert('Login Failed', 'Incorrect email or password. Please try again.');
+      } else if (result.status === 403) {
+        Alert.alert('Account Disabled', 'Your account has been deactivated. Contact support.');
+      } else if (result.status === 0) {
+        Alert.alert('Connection Error', result.message);
+      } else {
+        Alert.alert('Login Failed', result.message || 'An unexpected error occurred.');
+      }
+      return;
+    }
+
+    // Success — navigate to home
     onLogin();
   };
 
@@ -43,9 +61,7 @@ export default function LoginScreen({
       <Text style={styles.logo}>💊</Text>
 
       <Text style={styles.title}>MediTeach</Text>
-      <Text style={styles.subtitle}>
-        Your Smart Medication Assistant
-      </Text>
+      <Text style={styles.subtitle}>Your Smart Medication Assistant</Text>
 
       <Text style={styles.heading}>Login</Text>
 
@@ -57,6 +73,8 @@ export default function LoginScreen({
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        autoCorrect={false}
+        editable={!loading}
       />
 
       <Text style={styles.label}>Password</Text>
@@ -66,18 +84,25 @@ export default function LoginScreen({
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        editable={!loading}
       />
 
       <TouchableOpacity
-        style={styles.loginButton}
+        style={[styles.loginButton, loading && styles.loginButtonDisabled]}
         onPress={handleLogin}
+        disabled={loading}
       >
-        <Text style={styles.loginButtonText}>Login</Text>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <Text style={styles.loginButtonText}>Login</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={onForgotPassword}
         style={styles.linkButton}
+        disabled={loading}
       >
         <Text style={styles.linkText}>Forgot Password?</Text>
       </TouchableOpacity>
@@ -85,6 +110,7 @@ export default function LoginScreen({
       <TouchableOpacity
         onPress={onRegister}
         style={styles.registerButton}
+        disabled={loading}
       >
         <Text style={styles.registerText}>
           Don't have an account? Register
@@ -147,6 +173,11 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     alignItems: 'center',
     marginTop: 5,
+    minHeight: 52,
+    justifyContent: 'center',
+  },
+  loginButtonDisabled: {
+    backgroundColor: '#9CB8D2',
   },
   loginButtonText: {
     color: '#FFFFFF',

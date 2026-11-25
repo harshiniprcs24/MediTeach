@@ -53,6 +53,7 @@ async def test_get_medicine_by_id_not_found():
 
 @pytest.mark.asyncio
 async def test_check_interactions_empty():
+    """Empty medicine_ids list must now return 422 (validator requires >= 2 distinct IDs)."""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         token = await get_auth_token(client)
         response = await client.post(
@@ -60,5 +61,4 @@ async def test_check_interactions_empty():
             json={"medicine_ids": []},
             headers={"Authorization": f"Bearer {token}"},
         )
-    assert response.status_code == 200
-    assert "interactions" in response.json()
+    assert response.status_code == 422

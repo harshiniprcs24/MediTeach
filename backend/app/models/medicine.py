@@ -15,6 +15,7 @@ class Medicine(Base, UUIDMixin, TimestampMixin):
     dosage_info = Column(Text, nullable=True)
     contraindications = Column(Text, nullable=True)
     translations = Column(JSON, nullable=True)  # {"ta": "...", "hi": "...", "te": "..."}
+    drug_interactions = Column(JSON, nullable=True)  # {"drug": [...], "brand": [...], "effect": [...]}
 
     def __repr__(self):
         return f"<Medicine id={self.id} name={self.name}>"
